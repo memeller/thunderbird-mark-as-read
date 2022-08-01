@@ -56,7 +56,7 @@
 			parseFolderData: function (folderData, parentElement) {
 				
 				folderData.forEach((folder) => {
-					let id=md5(folder.accountId + folder.name);
+					let id=md5(folder.accountId + folder.path);
 					parentElement.children.push(id);
 
 					this.nodes[id] = {
@@ -75,9 +75,12 @@
 			onSettingsLoaded:function(result)
 			{
 				
-				if(!('selectedKeys' in result))
-				return;
-				this.selectedNodes=result.selectedKeys;
+				if (!("selectedKeys" in result)) return;
+				if ("newValue" in result.selectedKeys)
+					this.selectedFolders = result.selectedKeys.newValue;
+				else
+					this.selectedFolders = result.selectedKeys;
+    
 				let that=this;
 				Object.values(this.selectedNodes).forEach(function(value) {
 					return that.nodes[value].state.checked = true;

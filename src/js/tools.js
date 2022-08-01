@@ -10,7 +10,7 @@ export async function scanAndMarkAsRead(selectedFolders) {
 
 function markAsReadFolderData(folderData, markAsReadIds) {
     folderData.forEach((folder) => {
-        let id = md5(folder.accountId + folder.name);
+        let id = md5(folder.accountId + folder.path);
         if (markAsReadIds.includes(id))
             browser.messages
             .query({ unread: true, folder: folder })

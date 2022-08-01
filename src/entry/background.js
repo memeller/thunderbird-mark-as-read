@@ -18,7 +18,10 @@ function onStartup() {
 
 function onSettingsLoaded(result) {
     if (!("selectedKeys" in result)) return;
-    selectedFolders = result.selectedKeys;
+    if ("newValue" in result.selectedKeys)
+        selectedFolders = result.selectedKeys.newValue;
+    else
+        selectedFolders = result.selectedKeys;
 
 }
 
@@ -26,9 +29,13 @@ function onError(error) {
     console.log(`Error: ${error}`);
 }
 async function messageReceivedListener(folder, messages) {
-    let tempId = md5(folder.accountId + folder.name);
+    let tempId = md5(folder.accountId + folder.path);
+
     if (selectedFolders.includes(tempId)) {
-        for (let message of messages) {
+        let messagebase = messages;
+        if ("messages" in messages)
+            messagebase = messages.messages;
+        for (let message of messagebase) {
             browser.messages.update(message.id, { read: true });
         }
     }
