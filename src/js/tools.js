@@ -8,19 +8,27 @@ export async function scanAndMarkAsRead(selectedFolders) {
     });
 }
 
-function markAsReadFolderData(folderData, markAsReadIds) {
-    folderData.forEach((folder) => {
-        let id = md5(folder.accountId + folder.path);
-        if (markAsReadIds.includes(id))
-            browser.messages
-            .query({ unread: true, folder: folder })
-            .then((messageList) => {
-                if (messageList.messages.length > 0)
-                    messageList.messages.forEach((message) => {
-                        browser.messages.update(message.id, { read: true });
-                    });
-            });
-        if (folder.subFolders.length > 0)
-            markAsReadFolderData(folder.subFolders, markAsReadIds);
-    });
+export function markAsReadFolderData(folderData, markAsReadIds) {
+    if (Array.isArray(folderData)) {
+        folderData.forEach((folder) => {
+            checkFolderAndMark(folder, markAsReadIds);
+            if (folder.subFolders.length > 0)
+                markAsReadFolderData(folder.subFolders, markAsReadIds);
+        });
+    } else
+        checkFolderAndMark(folderData, markAsReadIds);
+}
+
+function checkFolderAndMark(folder, markAsReadIds) {
+    let id = md5(folder.accountId + folder.path);
+    if (markAsReadIds.includes(id))
+        browser.messages
+        .query({ unread: true, folder: folder })
+        .then((messageList) => {
+            if (messageList.messages.length > 0)
+                messageList.messages.forEach((message) => {
+                    browser.messages.update(message.id, { read: true });
+                });
+        });
+
 }

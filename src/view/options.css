@@ -136,7 +136,8 @@ h5 {
     border-bottom: solid 2px #5C6BC0
 }
 
-.input-wrapper {
+.input-wrapper,
+label {
     font-size: 14px;
     position: relative;
     /* color: #000; */
