@@ -30,7 +30,6 @@ function onError(error) {
 }
 async function messageReceivedListener(folder, messages) {
     let tempId = md5(folder.accountId + folder.path);
-
     if (selectedFolders.includes(tempId)) {
         let messagebase = messages;
         if ("messages" in messages)

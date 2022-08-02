@@ -77,10 +77,10 @@
 				
 				if (!("selectedKeys" in result)) return;
 				if ("newValue" in result.selectedKeys)
-					this.selectedFolders = result.selectedKeys.newValue;
+					this.selectedNodes = result.selectedKeys.newValue;
 				else
-					this.selectedFolders = result.selectedKeys;
-    
+					this.selectedNodes = result.selectedKeys;
+				
 				let that=this;
 				Object.values(this.selectedNodes).forEach(function(value) {
 					return that.nodes[value].state.checked = true;
