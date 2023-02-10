@@ -8,8 +8,9 @@ After installing simply select folders using extension's options. After receivin
 
 ![screenshot](screenshot.png)
 
-
 Uses [sanyu1225/vue-cli-plugin-chrome-extension-cli](https://github.com/sanyu1225/vue-cli-plugin-chrome-extension-cli) as base.
+
+Icon: [Linear Color by justicon @ flaticon.com](https://www.flaticon.com/free-icon/email_873477)
 
 The extension uses [browser.messages.update](https://webextension-api.thunderbird.net/en/91/messages.html#update-messageid-newproperties) to change the 'read' parameter of messages, so should be safe for your inbox.
 ## Permissions
