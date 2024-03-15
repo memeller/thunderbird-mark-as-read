@@ -1,5 +1,6 @@
 /*jshint esversion: 8 */
 var md5 = require("md5");
+var logConsole=false;
 export async function scanAndMarkAsRead(selectedFolders) {
     browser.accounts.list().then((result) => {
         result.forEach((account) => {
@@ -18,10 +19,16 @@ export function markAsReadFolderData(folderData, markAsReadIds) {
     } else
         checkFolderAndMark(folderData, markAsReadIds);
 }
-
+export function setDebug(isDebug)
+{
+    logConsole=isDebug;
+}
 function checkFolderAndMark(folder, markAsReadIds) {
     let id = md5(folder.accountId + folder.path);
+    
     if (markAsReadIds.includes(id))
+        if(logConsole)
+            console.debug(`MarkAsRead: Found id that should be marked: ${id}`)
         browser.messages
         .query({ unread: true, folder: folder })
         .then((messageList) => {
