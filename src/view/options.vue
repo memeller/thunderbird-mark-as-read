@@ -10,8 +10,9 @@
 		<p>If you wish to mark existing messages in these folders as read now, you can do so by using the button below.</p>
 		<button @click="scanAndMarkAsRead(selectedNodes)">✔ Mark existing messages as read in selected folders</button>
 		<p>For some reason Thunderbird will sometimes fail to fire the proper event when receiving new mail. If new messages are received in selected folders, and their read status is not changed, turn the option below on. If this option is turned on, after new message is received and put into one of the selected folders, all of the old unread messages (if any) will be marked as read in this folder.</p>
-		<label for="checkbox"><input type="checkbox" id="checkbox" v-model="useOnFolderInfo" />
+		<label for="checkbox"><input type="checkbox" id="useOnFolderInfo" v-model="useOnFolderInfo" />
 		Use different event to detect new messages</label>
+		<label for="checkbox"><input type="checkbox" id="logConsole" v-model="logConsole" />Log various debug data to console</label>
 	</div>
 </template>
 
@@ -26,7 +27,7 @@
 		},
 		mounted() {
 			browser.accounts.list().then(this.listAccounts);
-			let getting = browser.storage.sync.get(["selectedKeys","treeSelectionMode","useFolderInfoEvent"]);
+			let getting = browser.storage.sync.get(["selectedKeys","treeSelectionMode","useFolderInfoEvent","logConsole"]);
 			getting.then(this.onSettingsLoaded.bind(this), this.onError);
 			
 		},
@@ -34,6 +35,11 @@
 			useOnFolderInfo(newValue){
 				browser.storage.sync.set({
 					useFolderInfoEvent: newValue
+				});
+			},
+			logConsole(newValue){
+				browser.storage.sync.set({
+					logConsole: newValue
 				});
 			},
 			treeSelectionMode(newValue){
@@ -97,6 +103,9 @@
 				
 				if ("useFolderInfoEvent" in result)
 					this.useOnFolderInfo = result.useFolderInfoEvent;
+				if ("logConsole" in result)
+					this.logConsole = result.logConsole;
+				
 				if ("treeSelectionMode" in result)
 				{
 					this.treeSelectionMode = result.treeSelectionMode;
@@ -141,6 +150,7 @@
 				nodes: {},
 				selectedNodes:[],
 				useOnFolderInfo:false,
+				logConsole:false,
 				treeSelectionMode:1
 			};
 		},
