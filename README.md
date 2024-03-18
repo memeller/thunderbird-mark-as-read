@@ -13,7 +13,16 @@ Uses [sanyu1225/vue-cli-plugin-chrome-extension-cli](https://github.com/sanyu122
 Icon: [Linear Color by justicon @ flaticon.com](https://www.flaticon.com/free-icon/email_873477)
 
 The extension uses [browser.messages.update](https://webextension-api.thunderbird.net/en/91/messages.html#update-messageid-newproperties) to change the 'read' parameter of messages, so should be safe for your inbox.
+
 ## Permissions
+
 - accountsRead - used for scanning the folders of each account
 - messagesRead - used for marking messages as read and querying unread messages in selected folders. Also needed for scanning of incoming mail.
 - storage - used for saving and (in future) syncing of the folders selected in option panel
+
+## Building
+
+Clone this repo, run
+
+    npm install
+    npm run build

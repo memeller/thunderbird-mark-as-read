@@ -6,7 +6,7 @@ let isStartup=true;
 let logConsole=false;
 browser.runtime.onInstalled.addListener(onInstalled);
 browser.runtime.onStartup.addListener(onStartup);
-browser.storage.onChanged.addListener(onKeysLoaded);
+browser.storage.onChanged.addListener(onOptionsLoaded);
 
 function onInstalled(details) {
     browser.runtime.openOptionsPage();
@@ -15,26 +15,20 @@ function onInstalled(details) {
 
 async function onStartup() {
     browser.storage.sync.get(["selectedKeys","useFolderInfoEvent","logConsole"]).then(onOptionsLoaded, onError);
-    
 }
 
-function onKeysLoaded(result) {
-    if (!("selectedKeys" in result)) return;
-    browser.storage.sync.get("useFolderInfoEvent")
+function onChanged(result,area) {
+    console.log(result);
+    if(area!="sync")
+    return;
+    onOptionsLoaded(result);
     
 }
 
 function onOptionsLoaded(options) {
-    logConsole=options.logConsole;
-    if ("newValue" in options.selectedKeys)
-        selectedFolders = options.selectedKeys.newValue;
-    else
-        selectedFolders = options.selectedKeys;
-        let useFolderInfoEvent = false;
-    if (typeof options.useFolderInfoEvent == "boolean")
-        useFolderInfoEvent = options.useFolderInfoEvent;
-    else
-        useFolderInfoEvent = options.useFolderInfoEvent.newValue;
+    logConsole=getValueFromStorageObj(options,"logConsole");
+    selectedFolders = getValueFromStorageObj(options,"selectedKeys");
+    let useFolderInfoEvent = getValueFromStorageObj(options,"useFolderInfoEvent");    
     if (useFolderInfoEvent) {
         if(logConsole)
             console.debug("MarkAsRead: Using folder info event for new mail tracking");
@@ -45,8 +39,7 @@ function onOptionsLoaded(options) {
             console.debug("MarkAsRead: Using new mail received event for new mail tracking");
         browser.messages.onNewMailReceived.addListener(messageReceivedListener);
         browser.folders.onFolderInfoChanged.removeListener(folderInfoChanged);
-    }
-    
+    }   
     setDebug(options.logConsole);
     if(isStartup)
     {
@@ -56,7 +49,13 @@ function onOptionsLoaded(options) {
         scanAndMarkAsRead(selectedFolders);
     }
 }
-
+function getValueFromStorageObj(storageObj,key)
+{
+    if("newValue" in storageObj[key])
+        return storageObj[key].newValue;
+    else
+        return storageObj[key];
+}
 function onError(error) {
     console.log(`Error: ${error}`);
 }
