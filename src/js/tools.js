@@ -2,6 +2,8 @@
 var md5 = require("md5");
 var logConsole=false;
 export async function scanAndMarkAsRead(selectedFolders) {
+    if(logConsole)
+        console.debug(`MarkAsRead: scanAndMarkAsRead`)
     browser.accounts.list().then((result) => {
         result.forEach((account) => {
             markAsReadFolderData(account.folders, selectedFolders);
@@ -10,6 +12,8 @@ export async function scanAndMarkAsRead(selectedFolders) {
 }
 
 export function markAsReadFolderData(folderData, markAsReadIds) {
+    if(logConsole)
+        console.debug(`MarkAsRead: mark as read folder data`)
     if (Array.isArray(folderData)) {
         folderData.forEach((folder) => {
             checkFolderAndMark(folder, markAsReadIds);
@@ -21,12 +25,15 @@ export function markAsReadFolderData(folderData, markAsReadIds) {
 }
 export function setDebug(isDebug)
 {
+    console.debug("tools setDebug: "+isDebug);
     logConsole=isDebug;
 }
 function checkFolderAndMark(folder, markAsReadIds) {
     let id = md5(folder.accountId + folder.path);
-    
+    if(logConsole)
+        console.debug(`MarkAsRead: check folders and mark as read: ${folder.accountId} ${folder.path}`)
     if (markAsReadIds.includes(id))
+    {
         if(logConsole)
             console.debug(`MarkAsRead: Found id that should be marked: ${id}`)
         browser.messages
@@ -37,5 +44,5 @@ function checkFolderAndMark(folder, markAsReadIds) {
                     browser.messages.update(message.id, { read: true });
                 });
         });
-
+    }
 }

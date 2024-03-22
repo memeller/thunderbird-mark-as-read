@@ -4,6 +4,7 @@ import { scanAndMarkAsRead, markAsReadFolderData,setDebug } from "../js/tools.js
 var selectedFolders = [];
 let isStartup=true;
 let logConsole=false;
+let useFolderInfoEvent=false;
 browser.runtime.onInstalled.addListener(onInstalled);
 browser.runtime.onStartup.addListener(onStartup);
 browser.storage.onChanged.addListener(onOptionsLoaded);
@@ -18,29 +19,35 @@ async function onStartup() {
 }
 
 function onChanged(result,area) {
-    console.log(result);
     if(area!="sync")
     return;
-    onOptionsLoaded(result);
+    onOptionsLoaded(result,true);
     
 }
 
-function onOptionsLoaded(options) {
-    logConsole=getValueFromStorageObj(options,"logConsole");
-    selectedFolders = getValueFromStorageObj(options,"selectedKeys");
-    let useFolderInfoEvent = getValueFromStorageObj(options,"useFolderInfoEvent");    
-    if (useFolderInfoEvent) {
-        if(logConsole)
-            console.debug("MarkAsRead: Using folder info event for new mail tracking");
-        browser.folders.onFolderInfoChanged.addListener(folderInfoChanged);
-        browser.messages.onNewMailReceived.removeListener(messageReceivedListener);
-    } else {
-        if(logConsole)
-            console.debug("MarkAsRead: Using new mail received event for new mail tracking");
-        browser.messages.onNewMailReceived.addListener(messageReceivedListener);
-        browser.folders.onFolderInfoChanged.removeListener(folderInfoChanged);
-    }   
-    setDebug(options.logConsole);
+function onOptionsLoaded(options,onChanged=false) {
+    if(options.logConsole!==undefined)
+    {
+        logConsole=getValueFromStorageObj(options,"logConsole",logConsole);
+        setDebug(logConsole);
+    }
+    if(options.selectedKeys!==undefined)
+        selectedFolders = getValueFromStorageObj(options,"selectedKeys",selectedFolders);
+    if(options.useFolderInfoEvent!==undefined)
+    {
+        useFolderInfoEvent  = getValueFromStorageObj(options,"useFolderInfoEvent",useFolderInfoEvent);    
+        if (useFolderInfoEvent) {
+            if(logConsole)
+                console.debug("MarkAsRead: Using folder info event for new mail tracking");
+            browser.folders.onFolderInfoChanged.addListener(folderInfoChanged);
+            browser.messages.onNewMailReceived.removeListener(messageReceivedListener);
+        } else {
+            if(logConsole)
+                console.debug("MarkAsRead: Using new mail received event for new mail tracking");
+            browser.messages.onNewMailReceived.addListener(messageReceivedListener);
+            browser.folders.onFolderInfoChanged.removeListener(folderInfoChanged);
+        }   
+    }
     if(isStartup)
     {
         isStartup=false;
@@ -49,12 +56,20 @@ function onOptionsLoaded(options) {
         scanAndMarkAsRead(selectedFolders);
     }
 }
-function getValueFromStorageObj(storageObj,key)
+function getValueFromStorageObj(storageObj,key,defaultValue)
 {
-    if("newValue" in storageObj[key])
+    if(storageObj[key]===undefined)
+    {
+        return defaultValue;
+    }
+    if(storageObj[key]===Object(storageObj[key]) && "newValue" in storageObj[key])
+    {
         return storageObj[key].newValue;
+    }
     else
+    {
         return storageObj[key];
+    }
 }
 function onError(error) {
     console.log(`Error: ${error}`);
