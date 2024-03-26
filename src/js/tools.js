@@ -13,7 +13,7 @@ export async function scanAndMarkAsRead(selectedFolders) {
 
 export function markAsReadFolderData(folderData, markAsReadIds) {
     if(logConsole)
-        console.debug(`MarkAsRead: mark as read folder data`)
+        console.debug(`MarkAsRead: markAsReadFolderData`)
     if (Array.isArray(folderData)) {
         folderData.forEach((folder) => {
             checkFolderAndMark(folder, markAsReadIds);
@@ -25,8 +25,9 @@ export function markAsReadFolderData(folderData, markAsReadIds) {
 }
 export function setDebug(isDebug)
 {
-    console.debug("tools setDebug: "+isDebug);
     logConsole=isDebug;
+    if(logConsole)
+        console.debug("MarkAsRead: tools setDebug: "+isDebug);
 }
 function checkFolderAndMark(folder, markAsReadIds) {
     let id = md5(folder.accountId + folder.path);
