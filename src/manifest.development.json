@@ -7,7 +7,7 @@
         }
     },
     "description": "Automatically mark incoming messages as read if they are in one of selected folders. An attempt to revive & enhance 'Mark Junk Read' by Alex Cabal",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "background": {
         "scripts": [
             "/background.js"

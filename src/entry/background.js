@@ -7,9 +7,9 @@ let logConsole=false;
 let useFolderInfoEvent=false;
 browser.runtime.onInstalled.addListener(onInstalled);
 browser.runtime.onStartup.addListener(onStartup);
-browser.storage.onChanged.addListener(onOptionsLoaded);
+browser.storage.onChanged.addListener(onChanged);
 
-function onInstalled(details) {
+function onInstalled() {
     browser.runtime.openOptionsPage();
     onStartup();
 }
@@ -21,11 +21,11 @@ async function onStartup() {
 function onChanged(result,area) {
     if(area!="sync")
     return;
-    onOptionsLoaded(result,true);
+    onOptionsLoaded(result);
     
 }
 
-function onOptionsLoaded(options,onChanged=false) {
+function onOptionsLoaded(options) {
     if(options.logConsole!==undefined)
     {
         logConsole=getValueFromStorageObj(options,"logConsole",logConsole);
@@ -86,7 +86,7 @@ function onError(error) {
     console.log(`Error: ${error}`);
 }
 
-function folderInfoChanged(folder, folderInfo) {
+function folderInfoChanged(folder) {
     if(logConsole)
         console.debug(`MarkAsRead: Folder info change detected, checking if anything should be marked as read`);
     markAsReadFolderData(folder, selectedFolders);
