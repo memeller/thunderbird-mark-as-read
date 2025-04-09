@@ -41,7 +41,7 @@ async function checkFolderAndMark(folder, markAsReadIds) {
             console.debug(`MarkAsRead: |__ Found id that should be marked: ${id}`)
         if(parseInt(info.version) >=111 && typeof("browser.folders.markAsRead")==="function")
         {
-            browser.folders.markAsRead(folder);
+            browser.folders.markAsRead(folder.id);
             if(logConsole)
                 console.debug(`MarkAsRead:    + Using new method`)
         }
@@ -50,7 +50,7 @@ async function checkFolderAndMark(folder, markAsReadIds) {
             if(logConsole)
                 console.debug(`MarkAsRead:    + Using old method`)
             
-            let messages = getMessages(browser.messages.query({ unread: true, folder: folder }));
+            let messages = getMessages(browser.messages.query({ unread: true, folderId: folder.id }));
             for await (let message of messages) {
                 browser.messages.update(message.id, { read: true });
             }
@@ -59,7 +59,6 @@ async function checkFolderAndMark(folder, markAsReadIds) {
 }
 async function* getMessages(list) {
     let page = await list;
-    console.log(page);
     for (let message of page.messages) {
       yield message;
     }
