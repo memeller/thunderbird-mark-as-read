@@ -8,7 +8,7 @@ After installing simply select folders using extension's options. After receivin
 
 ![screenshot](screenshot.png)
 
-Uses [sanyu1225/vue-cli-plugin-chrome-extension-cli](https://github.com/sanyu1225/vue-cli-plugin-chrome-extension-cli) as base.
+Uses [thunderbird/webext-examples](https://github.com/thunderbird/webext-examples/tree/master/typescript-vue-experiment-api) as base for Vite.
 
 Icon: [Linear Color by justicon @ flaticon.com](https://www.flaticon.com/free-icon/email_873477)
 
