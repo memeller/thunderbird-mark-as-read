@@ -1,7 +1,7 @@
 /*jshint esversion: 8 */
 import {Md5} from 'ts-md5';
 import { scanAndMarkAsRead, markAsReadFolderData,setDebug } from "./js/tools";
-var selectedFolders = [];
+var selectedFolders: string[] = [];
 let isStartup=true;
 let logConsole=false;
 let useFolderInfoEvent=false;
@@ -92,9 +92,12 @@ function folderInfoChanged(folder) {
     markAsReadFolderData(folder, selectedFolders);
 }
 async function messageMovedListener(oldMessages, movedMessages) {
+    let movedMessagesBase= movedMessages;
+    if("messages" in movedMessages)
+         movedMessagesBase=movedMessages.messages;
     if(logConsole)
         console.debug(`MarkAsRead: MessagemovedEvent`);
-    movedMessages.forEach(message => {
+     movedMessagesBase.forEach(message => {
         if(logConsole)
             console.log(message);
         //folder is optional in messageHeader

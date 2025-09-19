@@ -7,9 +7,9 @@ export async function scanAndMarkAsRead(selectedFolders) {
     if(logConsole)
         console.debug(`MarkAsRead: scanAndMarkAsRead`)
     browser.accounts.list().then((result) => {
-        result.forEach((account) => {
+        for (let account of result) {
             markAsReadFolderData(account.folders, selectedFolders);
-        });
+        }
     });
 }
 
