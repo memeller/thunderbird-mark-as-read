@@ -6,7 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+xpi/*
+source_code/*
 node_modules
 dist
 dist-ssr

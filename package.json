@@ -6,10 +6,10 @@
   "scripts": {
     "build": "./scripts/build.sh",
     "build-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./scripts/build.ps1",
+    "bcompress-xpi": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./scripts/compress_arch.ps1",
     "preview": "vite preview"
   },
   "dependencies": {
-    "md5": "^2.3.0",
     "ts-md5": "^2.0.1",
     "vue": "^3.4.37",
     "vue3-treeview": "^0.4.2"
