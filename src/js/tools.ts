@@ -1,15 +1,15 @@
 /*jshint esversion: 8 */
-var md5 = require("md5");
+import {Md5} from 'ts-md5';
 var logConsole=false;
-const info = await browser.runtime.getBrowserInfo();
+
     
 export async function scanAndMarkAsRead(selectedFolders) {
     if(logConsole)
         console.debug(`MarkAsRead: scanAndMarkAsRead`)
     browser.accounts.list().then((result) => {
-        result.forEach((account) => {
+        for (let account of result) {
             markAsReadFolderData(account.folders, selectedFolders);
-        });
+        }
     });
 }
 
@@ -32,7 +32,8 @@ export function setDebug(isDebug)
         console.debug("MarkAsRead: tools setDebug: "+isDebug);
 }
 async function checkFolderAndMark(folder, markAsReadIds) {
-    let id = md5(folder.accountId + folder.path);
+    let id =  Md5.hashStr(folder.accountId + folder.path);
+    let info = await browser.runtime.getBrowserInfo();
     if(logConsole)
         console.debug(`MarkAsRead: | check folders and mark as read: ${folder.accountId} ${folder.path}`)
     if (markAsReadIds.includes(id))

@@ -4,7 +4,7 @@ h2,
 h3,
 h4,
 h5 {
-    color: var(--in-content-text-color);
+    color: var(--in-content-text-color,var(--color-text-base,#000));
 }
 
 .tree {
@@ -33,14 +33,13 @@ h5 {
 }
 
 .node-wrapper:hover {
-    /* background-color: #eee */
-    background-color: var(--in-content-button-background-hover);
+    background-color: #fafafa; 
+    
 }
 
 .node-wrapper:focus {
     border: 0;
-    background-color: var(--in-content-button-background-active)
-    /* background-color: #e0e0e0 */
+    background-color: #f5f5f5;
 }
 
 .input-wrapper {
@@ -74,18 +73,18 @@ h5 {
 }
 
 .checkbox-wrapper {
-    background-color: var(--in-content-category-text-selected);
-    border: 2px solid var(--in-content-border-color);
+    /* background-color: var(--color-accent-primary); */
+    border: 1px solid var(--in-content-border-color);
     border-radius: .125em;
     cursor: pointer;
     transition: background .3s
 }
 
-.checkbox-wrapper.checked,
+ .checkbox-wrapper.checked,
 .checkbox-wrapper.indeterminate {
-    background-color: var(--in-content-primary-button-background);
-    border: 2px solid var(--in-content-border-color-active);
-}
+    background-color: var(--color-accent-primary);
+    border: 1px solid var(--color-accent-primary);
+} 
 
 
 /* .node-wrapper.disabled .checkbox-wrapper.checked {
@@ -141,7 +140,7 @@ label {
     font-size: 14px;
     position: relative;
     /* color: #000; */
-    color: var(--in-content-text-color);
+    color: var(--in-content-text-color,var(--color-text-base,#000));
     display: flex;
     align-items: center
 }
@@ -152,7 +151,7 @@ label {
 }
 
 .icon-wrapper svg path {
-    stroke: var(--in-content-text-color);
+    color: var(--in-content-text-color,var(--color-text-base,#000));
 }
 
 .input-wrapper:after {

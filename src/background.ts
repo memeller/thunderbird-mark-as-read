@@ -1,7 +1,7 @@
 /*jshint esversion: 8 */
-var md5 = require("md5");
-import { scanAndMarkAsRead, markAsReadFolderData,setDebug } from "../js/tools.js";
-var selectedFolders = [];
+import {Md5} from 'ts-md5';
+import { scanAndMarkAsRead, markAsReadFolderData,setDebug } from "./js/tools";
+var selectedFolders: string[] = [];
 let isStartup=true;
 let logConsole=false;
 let useFolderInfoEvent=false;
@@ -92,9 +92,12 @@ function folderInfoChanged(folder) {
     markAsReadFolderData(folder, selectedFolders);
 }
 async function messageMovedListener(oldMessages, movedMessages) {
+    let movedMessagesBase= movedMessages;
+    if("messages" in movedMessages)
+         movedMessagesBase=movedMessages.messages;
     if(logConsole)
         console.debug(`MarkAsRead: MessagemovedEvent`);
-    movedMessages.forEach(message => {
+     movedMessagesBase.forEach(message => {
         if(logConsole)
             console.log(message);
         //folder is optional in messageHeader
@@ -105,7 +108,7 @@ async function messageMovedListener(oldMessages, movedMessages) {
         else
         {
             let folder=message.folder;
-            let tempId = md5(folder.accountId + folder.path);
+            let tempId = Md5.hashStr(folder.accountId + folder.path);
             if(logConsole)
                 console.debug(`MarkAsRead: New message detected, tempId: ${tempId}`);
             if (selectedFolders.includes(tempId)) {
@@ -123,7 +126,7 @@ async function messageMovedListener(oldMessages, movedMessages) {
 async function messageReceivedListener(folder, messages) {
     if(logConsole)
     console.debug(`MarkAsRead: messageReceivedListener`);
-    let tempId = md5(folder.accountId + folder.path);
+    let tempId =  Md5.hashStr(folder.accountId + folder.path);
     if(logConsole)
         console.debug(`MarkAsRead: New message detected, tempId: ${tempId}`);
     if (selectedFolders.includes(tempId)) {

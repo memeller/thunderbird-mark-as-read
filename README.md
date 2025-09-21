@@ -8,7 +8,7 @@ After installing simply select folders using extension's options. After receivin
 
 ![screenshot](screenshot.png)
 
-Uses [sanyu1225/vue-cli-plugin-chrome-extension-cli](https://github.com/sanyu1225/vue-cli-plugin-chrome-extension-cli) as base.
+Uses [thunderbird/webext-examples](https://github.com/thunderbird/webext-examples/tree/master/typescript-vue-experiment-api) as base for Vite.
 
 Icon: [Linear Color by justicon @ flaticon.com](https://www.flaticon.com/free-icon/email_873477)
 
@@ -22,7 +22,22 @@ The extension uses [browser.messages.update](https://webextension-api.thunderbir
 
 ## Building
 
+There are two scripts for building this extension - please select the one corresponding to your OS
+
 Clone this repo, run
 
     npm install
-    npm run build
+    npm run build / npm run build-windows
+
+Build files will be created in dist folder
+
+## Packing (windows only)
+
+    npm install
+    npm run build-windows
+    npm run compress-build
+
+Compress-build creates two files:
+
+- xpi file in xpi directory
+- zip file with source code in source_code directory

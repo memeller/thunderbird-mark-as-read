@@ -1,27 +1,25 @@
 {
-  "name": "thunder-read",
-  "version": "0.1.0",
+  "name": "vue-vite-typescript-experiment",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "build-watch": "vue-cli-service  --env.NODE_ENV=development build-watch --mode development"
+    "build": "./scripts/build.sh",
+    "build-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./scripts/build.ps1",
+    "compress-build": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./scripts/compress_arch.ps1"
   },
   "dependencies": {
-    "@vue/cli-service": "^5.0.8",
-    "core-js": "^3.8.3",
-    "md5": "^2.3.0",
-    "vue": "^3.2.13",
-    "vue3-treeview": "^0.4"
+    "ts-md5": "^2.0.1",
+    "vue": "^3.4.37",
+    "vue3-treeview": "^0.4.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "vue-cli-plugin-chrome-extension-cli": "~1.1.4"
-  }
+    "@types/thunderbird-webext-browser": "^127.0.0",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "tsc-watch": "^7.1.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.1",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "pnpm@9.3.0+sha512.ee7b93e0c2bd11409c6424f92b866f31d3ea1bef5fbe47d3c7500cdc3c9668833d2e55681ad66df5b640c61fa9dc25d546efa54d76d7f8bf54b13614ac293631"
 }

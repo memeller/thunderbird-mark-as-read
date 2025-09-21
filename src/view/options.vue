@@ -1,29 +1,11 @@
-<template>
-	<div class="main_app">
-		<h1>Select folders</h1>
-		<p>Messages in selected folders will be marked as read after each new mail is received and also on each program launch.</p>
-		<tree name="tree" :nodes="nodes" :config="config" @nodeChecked="nodeChanged" @nodeUnchecked="nodeChanged"></tree>
-		<label for="checkbox_tree"><input type="checkbox" id="checkbox_tree" v-model="treeSelectionMode"/>
-		Auto select/deselect subfolder nodes when parent folder is selected.</label>
-		<p>Changes are automatically saved on each modification</p>
-		
-		<p>If you wish to mark existing messages in these folders as read now, you can do so by using the button below.</p>
-		<button @click="scanAndMarkAsRead(selectedNodes)">✔ Mark existing messages as read in selected folders</button>
-		<p>For some reason Thunderbird will sometimes fail to fire the proper event when receiving new mail. If new messages are received in selected folders, and their read status is not changed, turn the option below on. If this option is turned on, after new message is received and put into one of the selected folders, all of the old unread messages (if any) will be marked as read in this folder.</p>
-		<label for="checkbox"><input type="checkbox" id="useOnFolderInfo" v-model="useOnFolderInfo" />
-		Use different event to detect new messages</label>
-		<label for="checkbox"><input type="checkbox" id="logConsole" v-model="logConsole" />Log various debug data to console</label>
-	</div>
-</template>
-
-<script>
-	import treeview from "vue3-treeview";
-	import {scanAndMarkAsRead} from "../js/tools.js"
-	var md5 = require("md5");
+<script >
+	import Tree from "vue3-treeview";
+	import {scanAndMarkAsRead} from "../js/tools";
+	import {Md5} from 'ts-md5';
 	export default {
 		name: "optionsView",
 		components: {
-			tree: treeview,
+			tree: Tree,
 		},
 		mounted() {
 			browser.accounts.list().then(this.listAccounts);
@@ -56,7 +38,7 @@
 				this.config.roots.length = 0;
 				
 				arrayOfMailAccount.forEach((account) => {
-					let id=md5(account.id);
+					let id=Md5.hashStr(account.id);
 					this.nodes[id] = {
 						name: account.id,
 						text: account.name,
@@ -81,7 +63,7 @@
 			parseFolderData: function (folderData, parentElement) {
 				
 				folderData.forEach((folder) => {
-					let id=md5(folder.accountId + folder.path);
+					let id=Md5.hashStr(folder.accountId + folder.path);
 					parentElement.children.push(id);
 
 					this.nodes[id] = {
@@ -154,7 +136,7 @@
 				treeSelectionMode:1
 			};
 		},
-	};
+	}
 </script>
 
 <style>
@@ -169,3 +151,20 @@
 	/* margin-top: 60px; */
 }
 </style>
+<template>
+	<div class="main_app">
+		<h1>Select folders</h1>
+		<p>Messages in selected folders will be marked as read after each new mail is received and also on each program launch.</p>
+		<tree name="tree" :nodes="nodes" :config="config" @nodeChecked="nodeChanged" @nodeUnchecked="nodeChanged"></tree>
+		<label for="checkbox_tree"><input type="checkbox" id="checkbox_tree" v-model="treeSelectionMode"/>
+		Auto select/deselect subfolder nodes when parent folder is selected.</label>
+		<p>Changes are automatically saved on each modification</p>
+		
+		<p>If you wish to mark existing messages in these folders as read now, you can do so by using the button below.</p>
+		<button @click="scanAndMarkAsRead(selectedNodes)">✔ Mark existing messages as read in selected folders</button>
+		<p>For some reason Thunderbird will sometimes fail to fire the proper event when receiving new mail. If new messages are received in selected folders, and their read status is not changed, turn the option below on. If this option is turned on, after new message is received and put into one of the selected folders, all of the old unread messages (if any) will be marked as read in this folder.</p>
+		<label for="checkbox"><input type="checkbox" id="useOnFolderInfo" v-model="useOnFolderInfo" />
+		Use different event to detect new messages</label>
+		<label for="checkbox"><input type="checkbox" id="logConsole" v-model="logConsole" />Log various debug data to console</label>
+	</div>
+</template>
