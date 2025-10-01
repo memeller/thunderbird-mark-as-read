@@ -1,6 +1,6 @@
 <script >
 	import Tree from "vue3-treeview";
-	import {scanAndMarkAsRead} from "../js/tools";
+	import {scanAndMarkAsRead,setDelayEnabled,setDelayValue	} from "../js/tools";
 	import {Md5} from 'ts-md5';
 	export default {
 		name: "optionsView",
@@ -9,7 +9,7 @@
 		},
 		mounted() {
 			browser.accounts.list().then(this.listAccounts);
-			let getting = browser.storage.sync.get(["selectedKeys","treeSelectionMode","useFolderInfoEvent","logConsole"]);
+			let getting = browser.storage.sync.get(["selectedKeys","selectedDelayedKeys","delayEnabled","treeSelectionMode","useFolderInfoEvent","logConsole","delayMS"]);
 			getting.then(this.onSettingsLoaded.bind(this), this.onError);
 			
 		},
@@ -24,6 +24,18 @@
 					logConsole: newValue
 				});
 			},
+			delayEnabled(newValue){
+				browser.storage.sync.set({
+					delayEnabled: newValue
+				});
+				setDelayEnabled(newValue);
+			},
+			delayMS(newValue){
+				browser.storage.sync.set({
+					delayMS: newValue
+				});
+				setDelayValue(newValue);
+			},
 			treeSelectionMode(newValue){
 				browser.storage.sync.set({
 					treeSelectionMode: newValue
@@ -35,6 +47,7 @@
 			scanAndMarkAsRead,
 			listAccounts: function (arrayOfMailAccount) {
 				this.nodes = [];
+				this.delayednodes = [];
 				this.config.roots.length = 0;
 				
 				arrayOfMailAccount.forEach((account) => {
@@ -45,8 +58,14 @@
 						children: [],
 						state:{checked:false}
 					};
+					this.delayednodes[id] = {
+						name: account.id,
+						text: account.name,
+						children: [],
+						state:{checked:false}
+					};
 					this.config.roots.push(id);
-					this.parseFolderData(account.folders, this.nodes[id]);
+					this.parseFolderData(account.folders, this.nodes[id],this.delayednodes[id]);
 				});
 			},
 			nodeChanged:function()
@@ -55,18 +74,29 @@
 				this.selectedNodes = Object.keys(this.nodes).filter(function(key) {
 					return that.nodes[key].state.checked == true;
 				});
+				this.selectedDelayedNodes = Object.keys(this.delayednodes).filter(function(key) {
+					return that.delayednodes[key].state.checked == true;
+				});
 				browser.storage.sync.set({
-					selectedKeys: this.selectedNodes
+					selectedKeys: this.selectedNodes,
+					selectedDelayedKeys: this.selectedDelayedNodes
 				});
 				
 			},
-			parseFolderData: function (folderData, parentElement) {
+			parseFolderData: function (folderData, parentElement,parendDelayedElement=null) {
 				
 				folderData.forEach((folder) => {
 					let id=Md5.hashStr(folder.accountId + folder.path);
 					parentElement.children.push(id);
-
+					if(parendDelayedElement)
+						parendDelayedElement.children.push(id);
 					this.nodes[id] = {
+						name: id,
+						text: folder.name,
+						children: [],
+						state:{checked:false}
+					};
+					this.delayednodes[id] = {
 						name: id,
 						text: folder.name,
 						children: [],
@@ -75,7 +105,8 @@
 					if (folder.subFolders.length > 0)
 						this.parseFolderData(
 							folder.subFolders,
-							this.nodes[id]
+							this.nodes[id],
+							this.delayednodes[id]
 						);
 				});
 			},
@@ -87,6 +118,10 @@
 					this.useOnFolderInfo = result.useFolderInfoEvent;
 				if ("logConsole" in result)
 					this.logConsole = result.logConsole;
+				if ("delayEnabled" in result)
+					this.delayEnabled = result.delayEnabled;
+				if ("delayMS" in result)
+					this.delayedTreeEnabled = result.delayMS;
 				
 				if ("treeSelectionMode" in result)
 				{
@@ -96,9 +131,13 @@
 				if ("selectedKeys" in result)
 				{
 					this.selectedNodes = result.selectedKeys;
-					
+					if("selectedDelayedKeys" in result)
+						this.selectedDelayedKeys= result.selectedDelayedKeys;
 					let that=this;
 					Object.values(this.selectedNodes).forEach(function(value) {
+						return that.nodes[value].state.checked = true;
+					});
+					Object.values(this.selectedDelayedNodes).forEach(function(value) {
 						return that.nodes[value].state.checked = true;
 					});
 				}
@@ -130,9 +169,13 @@
 					checkMode:0
 				},
 				nodes: {},
+				delayednodes:{},
 				selectedNodes:[],
+				selectedDelayedNodes:[],
 				useOnFolderInfo:false,
 				logConsole:false,
+				delayMS:5000,
+				delayEnabled:false,
 				treeSelectionMode:1
 			};
 		},
@@ -156,6 +199,12 @@
 		<h1>Select folders</h1>
 		<p>Messages in selected folders will be marked as read after each new mail is received and also on each program launch.</p>
 		<tree name="tree" :nodes="nodes" :config="config" @nodeChecked="nodeChanged" @nodeUnchecked="nodeChanged"></tree>
+		<label for="checkbox_delayedtree"><input type="checkbox" id="checkbox_delayedtree" v-model="delayEnabled"/>
+		Mark messages as read in selected folders with a delay (separate list of folders).</label>
+		<div v-if="delayEnabled" style="margin-left:2rem">
+			<p >Delay: <input v-model="delayMS" type="number" min="1000" step="1000"/> ms</p>
+			<tree style="margin-top:0px;" name="delayedtree" :nodes="delayednodes" :config="config" @nodeChecked="nodeChanged" @nodeUnchecked="nodeChanged"></tree>
+		</div>
 		<label for="checkbox_tree"><input type="checkbox" id="checkbox_tree" v-model="treeSelectionMode"/>
 		Auto select/deselect subfolder nodes when parent folder is selected.</label>
 		<p>Changes are automatically saved on each modification</p>

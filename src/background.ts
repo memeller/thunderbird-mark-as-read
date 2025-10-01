@@ -2,8 +2,11 @@
 import {Md5} from 'ts-md5';
 import { scanAndMarkAsRead, markAsReadFolderData,setDebug } from "./js/tools";
 var selectedFolders: string[] = [];
+var selectedDelayedFolders: string[] = [];
 let isStartup=true;
 let logConsole=false;
+let delayEnabled=false;
+var delayMS=5000;
 let useFolderInfoEvent=false;
 browser.runtime.onInstalled.addListener(onInstalled);
 browser.runtime.onStartup.addListener(onStartup);
@@ -15,7 +18,7 @@ function onInstalled() {
 }
 
 async function onStartup() {
-    browser.storage.sync.get(["selectedKeys","useFolderInfoEvent","logConsole"]).then(onOptionsLoaded, onError);
+    browser.storage.sync.get(["selectedKeys","selectedDelayedKeys","useFolderInfoEvent","delayEnabled","logConsole","delayMS"]).then(onOptionsLoaded, onError);
 }
 
 function onChanged(result,area) {
@@ -33,6 +36,12 @@ function onOptionsLoaded(options) {
     }
     if(options.selectedKeys!==undefined)
         selectedFolders = getValueFromStorageObj(options,"selectedKeys",selectedFolders);
+    if(options.delayMS!==undefined)
+        delayMS = getValueFromStorageObj(options,"delayMS",delayMS);
+    if(options.delayEnabled!==undefined)
+        delayEnabled = getValueFromStorageObj(options,"delayEnabled",delayMS);
+    if(options.selectedDelayedKeys!==undefined)
+        selectedDelayedFolders = getValueFromStorageObj(options,"selectedDelayedKeys",selectedDelayedFolders);
     if(options.useFolderInfoEvent!==undefined)
     {
         let useFolderInfoEventNewValue  = getValueFromStorageObj(options,"useFolderInfoEvent",useFolderInfoEvent);            
@@ -48,7 +57,7 @@ function onOptionsLoaded(options) {
         setEventHandlers();   
         if(logConsole)
             console.debug("MarkAsRead: Scanning folders at startup");
-        scanAndMarkAsRead(selectedFolders);
+        scanAndMarkAsRead(selectedFolders,selectedDelayedFolders);
     }
 }
 function setEventHandlers()
@@ -89,7 +98,7 @@ function onError(error) {
 function folderInfoChanged(folder) {
     if(logConsole)
         console.debug(`MarkAsRead: Folder info change detected, checking if anything should be marked as read`);
-    markAsReadFolderData(folder, selectedFolders);
+    markAsReadFolderData(folder, selectedFolders,selectedDelayedFolders);
 }
 async function messageMovedListener(oldMessages, movedMessages) {
     let movedMessagesBase= movedMessages;
@@ -118,6 +127,17 @@ async function messageMovedListener(oldMessages, movedMessages) {
                     console.debug(`MarkAsRead: Marking message ${message.id} as read`);
                 browser.messages.update(message.id, { read: true });
         
+            }
+            if(delayEnabled)
+            {
+                if(selectedDelayedFolders.includes(tempId))
+                {
+                    if(logConsole)
+                        console.debug(`MarkAsRead: Message belongs to folder that is marked`);
+                    if(logConsole)
+                        console.debug(`MarkAsRead: Marking message ${message.id} as read`);
+                    setTimeout(() => {   browser.messages.update(message.id, { read: true });},delayMS);    
+                }
             }
         }
     });
