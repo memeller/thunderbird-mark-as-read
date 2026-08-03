@@ -54,7 +54,7 @@ async function checkFolderAndMark(folder, markAsReadIds,isDelayed=false) {
     {
         if(logConsole)
             console.debug(`MarkAsRead: |__ Found id that should be marked: ${id}, isDelayed=${isDelayed}`);
-        if(parseInt(info.version) >=111 && typeof("browser.folders.markAsRead")==="function")
+        if(parseInt(info.version) >=111 && typeof(browser.folders.markAsRead)==="function")
         {
             if(isDelayed)
             {
