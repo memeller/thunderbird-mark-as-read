@@ -17,7 +17,9 @@ The extension uses [browser.messages.update](https://webextension-api.thunderbir
 ## Permissions
 
 - accountsRead - used for scanning the folders of each account
+- accountsFolders - used for marking folders as read in newer TB versions
 - messagesRead - used for marking messages as read and querying unread messages in selected folders. Also needed for scanning of incoming mail.
+- messagesUpdate - used for marking messages as read in single message mode
 - storage - used for saving and (in future) syncing of the folders selected in option panel
 
 ## Building
