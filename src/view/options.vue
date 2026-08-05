@@ -154,14 +154,12 @@
 					roots: ["id1", "id2"],
 					openedIcon: {
 						type: "shape",
-						stroke: "black",
 						strokeWidth: 3,
 						viewBox: "0 0 24 24",
 						draw: "M 2 12 L 22 12",
 					},
 					closedIcon: {
 						type: "shape",
-						stroke: "black",
 						strokeWidth: 3,
 						viewBox: "0 0 24 24",
 						draw: `M 12 2 L 12 22 M 2 12 L 22 12`,
@@ -193,6 +191,7 @@
 	background-color: var(--in-content-box-background);
 	/* margin-top: 60px; */
 }
+
 </style>
 <template>
 	<div class="main_app">
@@ -205,15 +204,15 @@
 			<p >Delay: <input v-model="delayMS" type="number" min="1000" step="1000"/> ms</p>
 			<tree style="margin-top:0px;" name="delayedtree" :nodes="delayednodes" :config="config" @nodeChecked="nodeChanged" @nodeUnchecked="nodeChanged"></tree>
 		</div>
-		<label for="checkbox_tree"><input type="checkbox" id="checkbox_tree" v-model="treeSelectionMode"/>
+		<label for="checkbox_tree"><input type="checkbox" class="checkbox-custom" id="checkbox_tree" v-model="treeSelectionMode"/>
 		Auto select/deselect subfolder nodes when parent folder is selected.</label>
 		<p>Changes are automatically saved on each modification</p>
 		
 		<p>If you wish to mark existing messages in these folders as read now, you can do so by using the button below.</p>
 		<button @click="scanAndMarkAsRead(selectedNodes)">✔ Mark existing messages as read in selected folders</button>
 		<p>For some reason Thunderbird will sometimes fail to fire the proper event when receiving new mail. If new messages are received in selected folders, and their read status is not changed, turn the option below on. If this option is turned on, after new message is received and put into one of the selected folders, all of the old unread messages (if any) will be marked as read in this folder.</p>
-		<label for="checkbox"><input type="checkbox" id="useOnFolderInfo" v-model="useOnFolderInfo" />
+		<label for="checkbox"><input type="checkbox" class="checkbox-custom" id="useOnFolderInfo" v-model="useOnFolderInfo" />
 		Use different event to detect new messages</label>
-		<label for="checkbox"><input type="checkbox" id="logConsole" v-model="logConsole" />Log various debug data to console</label>
+		<label for="checkbox"><input type="checkbox" class="checkbox-custom" id="logConsole" v-model="logConsole" />Log various debug data to console</label>
 	</div>
 </template>
