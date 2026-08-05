@@ -4,7 +4,7 @@ h2,
 h3,
 h4,
 h5 {
-    color: var(--in-content-text-color,var(--color-text-base,#000));
+   color: var(--text-color);
 }
 
 .tree {
@@ -28,18 +28,18 @@ h5 {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text-color);
     height: 24px;
     width: 24px
 }
 
 .node-wrapper:hover {
-    background-color: #fafafa; 
+    background-color: var(--button-primary-hover-background-color); 
     
 }
 
 .node-wrapper:focus {
-    border: 0;
-    background-color: #f5f5f5;
+    border: 1px solid var(--color-accent-primary);
 }
 
 .input-wrapper {
@@ -48,7 +48,8 @@ h5 {
 
 .icon-wrapper svg {
     height: 12px;
-    width: 12px
+    width: 12px;
+    stroke: var(--text-color);
 }
 
 .node-wrapper {
@@ -58,7 +59,7 @@ h5 {
     flex: 1;
     word-wrap: break-word;
     font-weight: 400;
-    font-size: 14px
+    font-size: 14px;
 }
 
 .checkbox-wrapper {
@@ -74,7 +75,7 @@ h5 {
 
 .checkbox-wrapper {
     /* background-color: var(--color-accent-primary); */
-    border: 1px solid var(--in-content-border-color);
+    border: 1px solid light-dark(#222426, CanvasText);
     border-radius: .125em;
     cursor: pointer;
     transition: background .3s
@@ -140,7 +141,7 @@ label {
     font-size: 14px;
     position: relative;
     /* color: #000; */
-    color: var(--in-content-text-color,var(--color-text-base,#000));
+    color: var(--text-color);
     display: flex;
     align-items: center
 }
@@ -151,7 +152,7 @@ label {
 }
 
 .icon-wrapper svg path {
-    color: var(--in-content-text-color,var(--color-text-base,#000));
+    color: var(--text-color);
 }
 
 .input-wrapper:after {
@@ -169,7 +170,8 @@ label {
     border: none;
     font-size: 14px;
     /* color: #000; */
-    border-bottom: 1px solid #d2d2d2;
+    border-bottom: 1px solid var(--text-color);
+    color:var(--text-color);
     outline: none;
     background: transparent;
     transition: border-color .2s
@@ -181,4 +183,9 @@ label {
     padding-bottom: 4px;
     border-bottom-width: 3px;
     border-bottom-color: #3f51b5
+}
+.checkbox-custom
+{
+	accent-color: var(--color-accent-primary);
+    color:var(--text-color);    
 }

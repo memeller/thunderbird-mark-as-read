@@ -19,6 +19,7 @@
     },
     "permissions": [
         "accountsRead",
+        "accountsFolders",
         "messagesRead",
         "messagesUpdate",
         "storage"
